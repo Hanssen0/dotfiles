@@ -21,47 +21,41 @@ function parseName(name) {
   return { monId, ws };
 }
 
-function parseWorkspaces(allRess) {
+function parseWorkspaces(allMons, allRess) {
   const nameToMon = {};
   const idToMon = {};
-  let maxMonId = 0;
+  allMons.forEach(({ id, name, activeWorkspace }) => {
+    const mon = {
+      name,
+      monId: id + 1,
+      maxWs: 0,
+      wsToRes: {},
+      allWss: [],
+      wsToIndex: {},
+      activeRes: activeWorkspace.id,
+    };
+    nameToMon[mon.name] = mon;
+    idToMon[mon.monId] = mon;
+  })
 
   const resToWs = {};
 
   const toRename = [];
 
   allRess.forEach(({ id: res, name, monitor }, resIndex) => {
-    const parsed = parseName(name);
-
-    // New monitor
-    if (nameToMon[monitor] === undefined) {
-      let monId;
-      if (parsed === null || idToMon[parsed.monId] !== undefined) {
-        // Unnamed or named but occupied monId
-        // Give it a new id
-        maxMonId += 1;
-        monId = maxMonId;
-      } else {
-        // Use the original avaliable id
-        maxMonId = Math.max(maxMonId, parsed.monId);
-        monId = parsed.monId;
-      }
-
-      nameToMon[monitor] = { monId, maxWs: 0, wsToRes: {}, allWss: [], wsToIndex: {} };
-      idToMon[monId] = monitor;
-    }
-
     const mon = nameToMon[monitor];
     const { monId } = mon;
 
+    const parsed = parseName(name);
+
     let newWs;
     if (parsed === null || mon.wsToRes[parsed.ws] !== undefined) {
-      // Unnamed or named but occupied monId
+      // Unnamed or named but occupied wsId
       // Give it a new id
       mon.maxWs += 1;
       newWs = mon.maxWs;
     } else {
-      // Use the original avaliable id
+      // Use the original available id
       mon.maxWs = Math.max(mon.maxWs, parsed.ws);
       newWs = parsed.ws;
     }
@@ -83,7 +77,7 @@ function parseWorkspaces(allRess) {
 
 function calcDistanceOfResToPreviousWs(res, resToWs, nameToMon, idToMon) {
   const ws = resToWs[res];
-  const mon = nameToMon[idToMon[ws.monId]];
+  const mon = idToMon[ws.monId];
   const wsIndex = mon.wsToIndex[ws.ws];
 
   const prevWs = wsIndex === 0 ? 1 : mon.allWss[wsIndex - 1];
@@ -91,27 +85,9 @@ function calcDistanceOfResToPreviousWs(res, resToWs, nameToMon, idToMon) {
   return ws.ws - prevWs - 1;
 }
 
-(async () => {
-  const action = process.argv[2];
-  if (action !== "workspace" && action !== "movetoworkspace") {
-    return;
-  }
-
+function switchWorkspace(allRess, activeMon, { toRename, nameToMon, resToWs, idToMon }) {
   const selectedIndex = Number(process.argv[3]);
-
-  const [{ stdout: activeResStr }, { stdout: allRessStr }] = await Promise.all([
-    exec("hyprctl -j activeworkspace"),
-    exec("hyprctl -j workspaces"),
-  ]);
-
-  const allRess = JSON.parse(allRessStr);
-  allRess.sort((a, b) => a.id - b.id);
   const maxRes = allRess[allRess.length - 1].id;
-
-  const { toRename, nameToMon, resToWs, idToMon } = parseWorkspaces(allRess);
-
-  const { monitor: activeMonName } = JSON.parse(activeResStr);
-  const activeMon = nameToMon[activeMonName];
   const { maxWs, allWss } = activeMon;
 
   let res = activeMon.wsToRes[selectedIndex];
@@ -137,7 +113,7 @@ function calcDistanceOfResToPreviousWs(res, resToWs, nameToMon, idToMon) {
 
         const availableResources = nowRes - prevRes - 1;
         if (availableResources >= d) {
-          // Enough recources to occupy
+          // Enough resources to occupy
           nowRes -= d;
           continue;
         }
@@ -166,11 +142,57 @@ function calcDistanceOfResToPreviousWs(res, resToWs, nameToMon, idToMon) {
     // The new workspace should be named
     toRename.push({ res, monId: activeMon.monId, ws: selectedIndex });
   }
+
+  return res;
+}
+
+(async () => {
+  const [{ stdout: allMonsStr }, { stdout: activeResStr }, { stdout: allRessStr }] = await Promise.all([
+    exec("hyprctl -j monitors"),
+    exec("hyprctl -j activeworkspace"),
+    exec("hyprctl -j workspaces"),
+  ]);
+
+  const allMons = JSON.parse(allMonsStr);
+  const allRess = JSON.parse(allRessStr);
+  allRess.sort((a, b) => a.id - b.id);
+
+  const parsedWorkspaces = parseWorkspaces(allMons, allRess);
+
+  const activeRes = JSON.parse(activeResStr);
+  const activeMon = parsedWorkspaces.nameToMon[activeRes.monitor];
+
+  const action = process.argv[2];
+  let dispatch;
+  let res = activeRes.id;
+  if (action === "workspace" || action === "movetoworkspace") {
+    dispatch = action;
+    res = switchWorkspace(allRess, activeMon, parsedWorkspaces);
+  } else if (action === "monitor" || action === "movetomonitor") {
+    const monCount = allMons.length;
+    dispatch = action.replace("monitor", "workspace");
+    const target = process.argv[3];
+    let monId;
+    if (target[0] === "+") {
+      const delta = target.substring(1);
+      monId = ((activeMon.monId + Number(delta) - 1) % monCount) + 1;
+    } else if (target[0] === "-") {
+      const delta = target.substring(1);
+      monId = ((((activeMon.monId - Number(delta) - 1) % monCount) + monCount) % monCount) + 1;
+    } else {
+      monId = Number(target);
+    }
+
+    if (!Number.isNaN(monId)) {
+      res = parsedWorkspaces.idToMon[monId].activeRes;
+    }
+  }
+
+  let command = `dispatch ${dispatch} ${res}`;
   
-  let command = `dispatch ${action} ${res}`;
-  if (toRename.length !== 0) {
+  if (parsedWorkspaces.toRename.length !== 0) {
     command = `${command}; ${
-      toRename
+      parsedWorkspaces.toRename
         .map((re) => `dispatch renameworkspace ${re.res} ${re.monId}-${re.ws}`)
         .join(";")
     }`;

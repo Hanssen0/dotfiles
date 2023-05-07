@@ -18,3 +18,21 @@ This helper lets you stay on the same monitor while switching workspaces.
 * Stop using JS for better performance.
 * A background service listening to monitor events, which maintains the workspace names after monitors changed.
 * You tell me.
+
+
+# Usage
+
+Replace 
+```
+bind = $mainMod, 1, workspace, 1
+
+bind = $mainMod SHIFT, 1, movetoworkspace, 1
+```
+with
+```
+bind = $mainMod, 1, exec, node ~/.config/hypr/scripts/monitorworkspace/monitorworkspace.js workspace 1
+
+bind = $mainMod SHIFT, 1, exec, node ~/.config/hypr/scripts/monitorworkspace/monitorworkspace.js movetoworkspace 1
+```
+
+If you are using `nvm`, you might need a wrapper for `node` like me. See [monitorworkspace.sh](./monitorworkspace.sh).

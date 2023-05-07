@@ -25,7 +25,8 @@
     //     }
     // },
     "wlr/workspaces": {
-        "on-click": "activate"
+        "on-click": "activate",
+        "sort-by-number": true
     },
     "keyboard-state": {
         "numlock": true,

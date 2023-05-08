@@ -2,28 +2,31 @@ const util = require("util");
 const exec = util.promisify(require("child_process").exec);
 
 // We use resource (abbr. res) to represent the original workspace here
-// New format: Monitor - Workspace
 
 function parseName(name) {
-  const args = name.split("-");
+  const ws = parseInt(name);
 
-  if (args.length !== 2) {
-    return null;
-  }
+  return Number.isNaN(ws) ? null : ws;
+}
 
-  const monId = Number(args[0]);
-  const ws = Number(args[1]);
+function addWs(workspaces, { ws, monId, res, resIndex, name }) {
+  const mon = workspaces.idToMon[monId];
 
-  if (Number.isNaN(monId) || Number.isNaN(ws)) {
-    return null;
-  }
-
-  return { monId, ws };
+  mon.maxWs = Math.max(mon.maxWs, ws);
+  mon.wsToRes[ws] = res;
+  mon.wsToIndex[ws] = mon.allWss.push(ws) - 1;
+  workspaces.resToWs[res] = { resIndex, ws, monId, name };
+  workspaces.allRess.push({ res, resIndex, ws, monId, name });
 }
 
 function parseWorkspaces(allMons, allRess) {
-  const nameToMon = {};
-  const idToMon = {};
+  const workspaces = {
+    nameToMon: {},
+    idToMon: {},
+    resToWs: {},
+    allRess: [],
+  };
+
   allMons.forEach(({ id, name, activeWorkspace }) => {
     const mon = {
       name,
@@ -34,114 +37,105 @@ function parseWorkspaces(allMons, allRess) {
       wsToIndex: {},
       activeRes: activeWorkspace.id,
     };
-    nameToMon[mon.name] = mon;
-    idToMon[mon.monId] = mon;
+
+    workspaces.nameToMon[mon.name] = mon;
+    workspaces.idToMon[mon.monId] = mon;
   })
 
-  const resToWs = {};
-
-  const toRename = [];
-
+  let freeResources = 0;
   allRess.forEach(({ id: res, name, monitor }, resIndex) => {
-    const mon = nameToMon[monitor];
-    const { monId } = mon;
+    const mon = workspaces.nameToMon[monitor];
+    const { monId, maxWs } = mon;
+    const oriWs = parseName(name);
 
-    const parsed = parseName(name);
+    const ws = (() => {
+      if (oriWs === null || oriWs <= maxWs) {
+        // Origin ws is invalid
+        return maxWs + 1;
+      }
 
-    let newWs;
-    if (parsed === null || mon.wsToRes[parsed.ws] !== undefined) {
-      // Unnamed or named but occupied wsId
-      // Give it a new id
-      mon.maxWs += 1;
-      newWs = mon.maxWs;
-    } else {
-      // Use the original available id
-      mon.maxWs = Math.max(mon.maxWs, parsed.ws);
-      newWs = parsed.ws;
-    }
+      const consumedRes = Math.min(oriWs - maxWs - 1, freeResources);
 
-    mon.wsToRes[newWs] = res;
-    mon.wsToIndex[newWs] = mon.allWss.push(newWs) - 1;
-    resToWs[res] = { resIndex, monId, ws: newWs };
-    
-    if (parsed !== null && monId === parsed.monId && newWs === parsed.ws) {
-      // Correctly named ws
-      return;
-    }
+      freeResources -= consumedRes;
+      return maxWs + consumedRes + 1;
+    })();
 
-    toRename.push({ res, monId, ws: newWs });
+    addWs(workspaces, { res, resIndex, monId, ws, name })
   });
 
-  return { toRename, idToMon, nameToMon, resToWs };
+  return workspaces;
 }
 
-function calcDistanceOfResToPreviousWs(res, resToWs, nameToMon, idToMon) {
+function calcDistanceOfResToPreviousWs(res, { resToWs, nameToMon, idToMon }) {
   const ws = resToWs[res];
   const mon = idToMon[ws.monId];
   const wsIndex = mon.wsToIndex[ws.ws];
 
-  const prevWs = wsIndex === 0 ? 1 : mon.allWss[wsIndex - 1];
+  const prevWs = wsIndex === 0 ? 0 : mon.allWss[wsIndex - 1];
 
   return ws.ws - prevWs - 1;
 }
 
-function switchWorkspace(allRess, activeMon, { toRename, nameToMon, resToWs, idToMon }) {
+function switchWorkspace(allRess, activeMon, workspaces) {
   const selectedIndex = Number(process.argv[3]);
   const maxRes = allRess[allRess.length - 1].id;
   const { maxWs, allWss } = activeMon;
 
   let res = activeMon.wsToRes[selectedIndex];
-  if (res === undefined) {
-    if (selectedIndex < maxWs) {
-      // Try to find a preserved resource for ws
-      // We must not occupy resources for other monitor
-      const nextExistedWs = allWss.find((ws) => ws > selectedIndex);
+  if (res !== undefined) {
+    // Existed workspace
+    return res;
+  }
 
-      let nowRes = activeMon.wsToRes[nextExistedWs];
-      let prevRes = nowRes;
-      // Occupied distances
-      const distanceStack = [nextExistedWs - selectedIndex];
+  if (selectedIndex >= maxWs) {
+    // Preserve enough resources for workspaces between
+    res = maxRes + selectedIndex - maxWs;
+  } else {
+    // Try to find a preserved resource for ws
+    // We must not occupy resources for other monitor
+    const nextExistedWs = allWss.find((ws) => ws > selectedIndex);
 
-      while (distanceStack.length !== 0) {
-        if (nowRes === prevRes) {
-          // All resources between (prevRes, nowRes] are occupied, searching forward
-          const resIndex = resToWs[nowRes].resIndex;
-          prevRes = resIndex === 0 ? 0 : allRess[resIndex - 1].id;
-        }
+    let nowRes = activeMon.wsToRes[nextExistedWs];
+    let prevRes = nowRes;
+    // Occupied distances
+    const distanceStack = [nextExistedWs - selectedIndex];
 
-        const d = distanceStack.pop();
-
-        const availableResources = nowRes - prevRes - 1;
-        if (availableResources >= d) {
-          // Enough resources to occupy
-          nowRes -= d;
-          continue;
-        }
-
-        if (prevRes === 0) {
-          // No more resources
-          nowRes = 0;
-          break;
-        }
-
-        // Need more resources to satisfy the current distance
-        distanceStack.push(d - availableResources);
-        // The previous workspace may also occupies some resources
-        distanceStack.push(calcDistanceOfResToPreviousWs(prevRes, resToWs, nameToMon, idToMon));
-
-        nowRes = prevRes;
+    while (distanceStack.length !== 0) {
+      console.log(nowRes, prevRes, distanceStack);
+      if (nowRes === prevRes) {
+        // All resources between (prevRes, nowRes] are occupied, searching forward
+        const resIndex = workspaces.resToWs[nowRes].resIndex;
+        prevRes = resIndex === 0 ? 0 : allRess[resIndex - 1].id;
       }
 
-      // If not found, use the next resource
-      res = nowRes === 0 ? maxRes + 1 : nowRes;
-    } else {
-      // Preserve enough resources for workspaces between
-      res = maxRes + selectedIndex - maxWs;
+      const d = distanceStack.pop();
+
+      const availableResources = nowRes - prevRes - 1;
+      if (availableResources >= d) {
+        // Enough resources to occupy
+        nowRes -= d;
+        continue;
+      }
+
+      if (prevRes === 0) {
+        // No more resources
+        nowRes = 0;
+        break;
+      }
+
+      // Need more resources to satisfy the current distance
+      distanceStack.push(d - availableResources);
+      // The previous workspace may also occupies some resources
+      distanceStack.push(calcDistanceOfResToPreviousWs(prevRes, workspaces));
+
+      nowRes = prevRes;
     }
 
-    // The new workspace should be named
-    toRename.push({ res, monId: activeMon.monId, ws: selectedIndex });
+    // If not found, use the next resource
+    res = nowRes === 0 ? maxRes + 1 : nowRes;
   }
+
+  addWs(workspaces, { ws: selectedIndex, monId: activeMon.monId, res, resIndex: null, name: res });
 
   return res;
 }
@@ -157,20 +151,19 @@ function switchWorkspace(allRess, activeMon, { toRename, nameToMon, resToWs, idT
   const allRess = JSON.parse(allRessStr);
   allRess.sort((a, b) => a.id - b.id);
 
-  const parsedWorkspaces = parseWorkspaces(allMons, allRess);
+  const workspaces = parseWorkspaces(allMons, allRess);
 
   const activeRes = JSON.parse(activeResStr);
-  const activeMon = parsedWorkspaces.nameToMon[activeRes.monitor];
+  const activeMon = workspaces.nameToMon[activeRes.monitor];
+
+  const commands = [];
 
   const action = process.argv[2];
-  let dispatch;
-  let res = activeRes.id;
   if (action === "workspace" || action === "movetoworkspace") {
-    dispatch = action;
-    res = switchWorkspace(allRess, activeMon, parsedWorkspaces);
+    const res = switchWorkspace(allRess, activeMon, workspaces);
+    commands.push(`dispatch ${action} ${res}`);
   } else if (action === "monitor" || action === "movetomonitor") {
     const monCount = allMons.length;
-    dispatch = action.replace("monitor", "workspace");
     const target = process.argv[3];
     let monId;
     if (target[0] === "+") {
@@ -184,19 +177,19 @@ function switchWorkspace(allRess, activeMon, { toRename, nameToMon, resToWs, idT
     }
 
     if (!Number.isNaN(monId)) {
-      res = parsedWorkspaces.idToMon[monId].activeRes;
+      const res = workspaces.idToMon[monId].activeRes;
+      commands.push(`dispatch ${action.replace("monitor", "workspace")} ${res}`);
     }
   }
 
-  let command = `dispatch ${dispatch} ${res}`;
-  
-  if (parsedWorkspaces.toRename.length !== 0) {
-    command = `${command}; ${
-      parsedWorkspaces.toRename
-        .map((re) => `dispatch renameworkspace ${re.res} ${re.monId}-${re.ws}`)
-        .join(";")
-    }`;
-  }
+  commands.push(...workspaces.allRess.map(({ res, name, ws }) => {
+    if (name !== `${ws}`) {
+      return `dispatch renameworkspace ${res} ${ws}`
+    }
+    return null;
+  }).filter((c) => c !== null))
 
-  await exec(`hyprctl --batch "${command}"`);
+  if (commands.length !== 0) {
+    await exec(`hyprctl --batch "${commands.join(";")}"`);
+  }
 })();

@@ -9,13 +9,11 @@ This helper lets you stay on the same monitor while switching workspaces.
 # Features
 
 * Unlimited workspaces per monitor.
-* Switch to workspace.
-* Move to workspace.
-* Switch to monitor.
-* Move to monitor.
-* Readable workspace name.
+* Switch/Move to workspace.
+* Switch/Move to monitor.
 * No extra configuration for monitors.
-* Workspaces are ordered by its display name.
+* Natrual workspace name.
+* Workspaces are ordered.
 
 # Todo
 
@@ -23,8 +21,12 @@ This helper lets you stay on the same monitor while switching workspaces.
 * A background service listening to monitor events, which maintains the workspace names after monitors changed.
 * You tell me.
 
-
 # Usage
+
+Run once at the beginning to initialize workspace names.
+```
+exec-once = node ~/.config/hypr/scripts/monitorworkspace/monitorworkspace.js
+```
 
 Replace 
 ```
@@ -39,7 +41,7 @@ bind = $mainMod, 1, exec, node ~/.config/hypr/scripts/monitorworkspace/monitorwo
 bind = $mainMod SHIFT, 1, exec, node ~/.config/hypr/scripts/monitorworkspace/monitorworkspace.js movetoworkspace 1
 ```
 
-For switch/move to a monitor:
+To switch/move to a monitor:
 ```
 bind = $mainMod, O, exec, node ~/.config/hypr/scripts/monitorworkspace/monitorworkspace.js monitor +1
 
@@ -47,4 +49,4 @@ bind = $mainMod SHIFT, O, exec, node ~/.config/hypr/scripts/monitorworkspace/mon
 ```
 It supports both absolute and relative id.
 
-If you are using `nvm`, you might need a wrapper for `node` like me. See [monitorworkspace.sh](./monitorworkspace.sh).
+If using `nvm`, you might need a wrapper for `node` like me. See [monitorworkspace.sh](./monitorworkspace.sh).

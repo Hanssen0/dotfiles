@@ -182,9 +182,9 @@ function switchWorkspace(allRess, activeMon, workspaces) {
     }
   }
 
-  commands.push(...workspaces.allRess.map(({ res, name, ws }) => {
-    if (name !== `${ws}`) {
-      return `dispatch renameworkspace ${res} ${ws}`
+  commands.push(...workspaces.allRess.map(({ res, name, ws, monId }) => {
+    if (name !== `${ws}-${monId}`) {
+      return `dispatch renameworkspace ${res} ${ws}-${monId}`
     }
     return null;
   }).filter((c) => c !== null))

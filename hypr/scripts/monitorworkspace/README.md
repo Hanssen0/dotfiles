@@ -12,7 +12,7 @@ This helper lets you stay on the same monitor while switching workspaces.
 * Switch/Move to workspace.
 * Switch/Move to monitor.
 * No extra configuration for monitors.
-* Natrual workspace name.
+* Readable workspace name.
 * Workspaces are ordered.
 
 # Todo

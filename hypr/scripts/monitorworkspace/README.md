@@ -18,14 +18,15 @@ This helper lets you stay on the same monitor while switching workspaces.
 # Todo
 
 * Stop using JS for better performance.
-* A background service listening to monitor events, which maintains the workspace names after monitors changed.
 * You tell me.
 
 # Usage
 
-Run once at the beginning to initialize workspace names.
+Modify the path of `node` in the [`monitorworkspace.sh`](./monitorworkspace.sh) file.
+
+Make the background service launch with the Hyprland.
 ```
-exec-once = node ~/.config/hypr/scripts/monitorworkspace/monitorworkspace.js
+exec-once = sh ~/.config/hypr/scripts/monitorworkspace/service.sh
 ```
 
 Replace 
@@ -36,17 +37,15 @@ bind = $mainMod SHIFT, 1, movetoworkspace, 1
 ```
 with
 ```
-bind = $mainMod, 1, exec, node ~/.config/hypr/scripts/monitorworkspace/monitorworkspace.js workspace 1
+bind = $mainMod, 1, exec, sh ~/.config/hypr/scripts/monitorworkspace/monitorworkspace.sh workspace 1
 
-bind = $mainMod SHIFT, 1, exec, node ~/.config/hypr/scripts/monitorworkspace/monitorworkspace.js movetoworkspace 1
+bind = $mainMod SHIFT, 1, exec, sh ~/.config/hypr/scripts/monitorworkspace/monitorworkspace.sh movetoworkspace 1
 ```
 
 To switch/move to a monitor:
 ```
-bind = $mainMod, O, exec, node ~/.config/hypr/scripts/monitorworkspace/monitorworkspace.js monitor +1
+bind = $mainMod, O, exec, sh ~/.config/hypr/scripts/monitorworkspace/monitorworkspace.sh monitor +1
 
-bind = $mainMod SHIFT, O, exec, node ~/.config/hypr/scripts/monitorworkspace/monitorworkspace.js movetomonitor +1
+bind = $mainMod SHIFT, O, exec, sh ~/.config/hypr/scripts/monitorworkspace/monitorworkspace.sh movetomonitor +1
 ```
 It supports both absolute and relative id.
-
-If using `nvm`, you might need a wrapper for `node` like me. See [monitorworkspace.sh](./monitorworkspace.sh).

@@ -59,6 +59,8 @@ function parseWorkspaces(allMons, allRess) {
         return maxWs + 1;
       }
 
+      const prevRes = resIndex === 0 ? 0 : allRess[resIndex - 1].id;
+      freeResources += res - prevRes - 1;
       const consumedRes = Math.min(oriWs - maxWs - 1, freeResources);
 
       freeResources -= consumedRes;

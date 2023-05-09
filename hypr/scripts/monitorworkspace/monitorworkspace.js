@@ -3,6 +3,11 @@ const exec = util.promisify(require("child_process").exec);
 
 // We use resource (abbr. res) to represent the original workspace here
 
+const NUMBER_SUBSCRIPTS = ["₀", "₁", "₂", "₃", "₄", "₅", "₆", "₇", "₈", "₉"];
+function toSubscriptDigits(num) {
+  return num.toString().split().map((d) => NUMBER_SUBSCRIPTS[Number(d)]).join("");
+}
+
 function parseName(name) {
   const ws = parseInt(name);
 
@@ -183,8 +188,8 @@ function switchWorkspace(allRess, activeMon, workspaces) {
   }
 
   commands.push(...workspaces.allRess.map(({ res, name, ws, monId }) => {
-    if (name !== `${ws}-${monId}`) {
-      return `dispatch renameworkspace ${res} ${ws}-${monId}`
+    if (name !== `${ws}${toSubscriptDigits(monId)}`) {
+      return `dispatch renameworkspace ${res} ${ws}${toSubscriptDigits(monId)}`
     }
     return null;
   }).filter((c) => c !== null))

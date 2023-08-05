@@ -9,11 +9,11 @@ window#waybar {
 }
 
 .modules-right {
-    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0), white 10%, white 30%, rgb(230, 92, 96) 35%, rgb(230, 92, 96) 45%, rgb(229, 68, 73) 60%, rgb(229, 68, 73) 70%, rgb(238, 56, 49) 92%, rgb(255, 86, 0));
+    background-image: linear-gradient(90deg, rgba(255, 255, 255, 0), white 10%, white 15%, rgb(230, 92, 96) 20%, rgb(230, 92, 96) 45%, rgb(229, 68, 73) 60%, rgb(229, 68, 73) 70%, rgb(238, 56, 49) 92%, rgb(255, 86, 0));
 }
 
 window#waybar > box {
-    background-image: linear-gradient(90deg, rgb(245, 171, 185), rgb(91, 207, 251) 40%, white 55%, rgb(255, 86, 0));
+    background-image: linear-gradient(90deg, rgb(245, 171, 185), rgb(91, 207, 251) 40%, white 55%, white 75%, rgb(255, 86, 0));
     color: #ffffff;
     padding: 0 1.5rem;
     min-height: 2.3rem;

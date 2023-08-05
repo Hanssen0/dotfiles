@@ -19,3 +19,5 @@ HISTFILE=~/.config/zsh/.zhistory
 source /usr/share/nvm/init-nvm.sh
 
 bindkey '^J' autosuggest-accept
+
+export PATH=$PATH:~/.cargo/bin

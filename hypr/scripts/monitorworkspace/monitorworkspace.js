@@ -189,14 +189,18 @@ function switchWorkspace(allRess, activeMon, workspaces) {
     }
   }
 
-  commands.push(...workspaces.allRess.map(({ res, name, ws, monId }) => {
+  if (commands.length !== 0) {
+    await exec(`hyprctl --batch "${commands.join(";")}"`);
+  }
+
+  const renameCommands = workspaces.allRess.map(({ res, name, ws, monId }) => {
     if (name !== `${ws}${toSubscriptDigits(monId)}`) {
       return `dispatch renameworkspace ${res} ${ws}${toSubscriptDigits(monId)}`
     }
     return null;
-  }).filter((c) => c !== null))
+  }).filter((c) => c !== null);
 
-  if (commands.length !== 0) {
-    await exec(`hyprctl --batch "${commands.join(";")}"`);
+  if (renameCommands.length !== 0) {
+    await exec(`hyprctl --batch "${renameCommands.join(";")}"`);
   }
 })();

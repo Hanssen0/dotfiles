@@ -5,7 +5,7 @@
     // "width": 1280, // Waybar width
     "spacing": 0, // Gaps between modules (4px)
     // Choose the order of the modules
-    "modules-left": ["wlr/workspaces", "custom/media", "hyprland/window"],
+    "modules-left": ["hyprland/workspaces", "custom/media", "hyprland/window"],
     "modules-center": [],
     "modules-right": ["network", "pulseaudio", "idle_inhibitor", "cpu", "memory", "temperature", "backlight", "battery", "clock", "tray"],
     // Modules configuration
@@ -24,9 +24,10 @@
     //         "default": ""
     //     }
     // },
-    "wlr/workspaces": {
+    "hyrpland/workspaces": {
         "on-click": "activate",
-        "sort-by-number": true
+        "sort-by": "number",
+"format": "{name}"
     },
     "keyboard-state": {
         "numlock": true,

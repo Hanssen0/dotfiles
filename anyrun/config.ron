@@ -5,12 +5,9 @@ Config(
   
   // How wide the input box and results are.  
   width: Fraction(0.382), 
-  
-  // Where Anyrun is located on the screen: Top, Center
-  position: Top, 
 
   // How much the runner is shifted vertically  
-  vertical_offset: Absolute(25), 
+  y: Absolute(25), 
 
   // Hide match and plugin info icons  
   hide_icons: false, 

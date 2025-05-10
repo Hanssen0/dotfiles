@@ -7,7 +7,7 @@ Config(
   width: Fraction(0.382), 
 
   // How much the runner is shifted vertically  
-  y: Absolute(25), 
+  y: Absolute(10), 
 
   // Hide match and plugin info icons  
   hide_icons: false, 
@@ -22,7 +22,7 @@ Config(
   hide_plugin_info: false, 
 
   // Close window when a click outside the main box is received
-  close_on_click: false,
+  close_on_click: true,
 
   // Limit amount of entries shown in total
   max_entries: None,

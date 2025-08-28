@@ -32,5 +32,6 @@ SAVEHIST=1000
 
 alias rm="trash"
 alias icat="kitty +kitten icat"
+alias vim="nvim"
 
 eval "$(starship init zsh)"

@@ -83,16 +83,16 @@
   "backlight": {
     // "device": "acpi_video1",
     "format": "{percent}% {icon}",
-    "format-icons": ["", "", "", "", "", "", "", "", ""]
+    "format-icons": ["", "", "", "", "", "", "", "", ""],
+    "min-brightness": 8
   },
   "custom/ddcci": {
     "format": " {percentage}% {icon} ",
     "format-icons": ["", "", "", "", "", "", "", "", ""],
-    "interval": 2,
-    "exec": "sh ~/.config/waybar/get-ddcci.sh",
+    "exec": "sh ~/.config/waybar/ddcci.sh",
     "return-type": "json",
-    "on-scroll-up": "sh ~/.config/waybar/set-ddcci.sh +3",
-    "on-scroll-down": "sh ~/.config/waybar/set-ddcci.sh -3",
+    "on-scroll-up": "echo up > /tmp/waybar-ddcci-rx",
+    "on-scroll-down": "echo down > /tmp/waybar-ddcci-rx",
     "tooltip": false
   },
   "battery": {

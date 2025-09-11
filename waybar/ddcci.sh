@@ -9,7 +9,7 @@ do
 done
 
 init=$(ddcutil -b 21 -t getvcp 10 | cut -d ' ' -f 4)
-curr=${revMap[init]}
+curr=$((revMap[init] * 100 / 49))
 
 rm -rf $cmd_pipe
 mkfifo $cmd_pipe
@@ -24,7 +24,7 @@ trap "kill 0" EXIT
     curr=$(< $brightness)
 
     if [ $curr != $prev ]; then
-        ddcutil -b 21 --noverify setvcp 10 $((map[curr])) > /dev/null
+        ddcutil -b 21 --noverify setvcp 10 ${map[curr * 49 / 100]} > /dev/null
         prev=$curr
     fi
     sleep 1
@@ -33,7 +33,7 @@ trap "kill 0" EXIT
 
 while true; do
     echo $curr > $brightness
-    echo '{ "percentage":' "$(($curr * 100 / 49))" '}'
+    echo '{ "percentage":' "$curr" '}'
 
     read -r cmd < $cmd_pipe
     case $cmd in
@@ -51,5 +51,5 @@ while true; do
             curr=$cmd
             ;;
     esac
-    curr=$(($curr>49?49:$curr<2?2:$curr))
+    curr=$(($curr>100?100:$curr<5?5:$curr))
 done

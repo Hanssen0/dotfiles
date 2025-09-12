@@ -16,10 +16,16 @@
     "battery",
     "tray",
   ],
-  "hyrpland/workspaces": {
-    "on-click": "activate",
-    "sort-by": "number",
-    "format": "{name}"
+  "hyprland/workspaces": {
+    "format": "{name} {windows}",
+    "on-scroll-up": "hyprctl dispatch 'split-workspace -1'",
+    "on-scroll-down": "hyprctl dispatch 'split-workspace +1'",
+    "workspace-taskbar": {
+        "enable": true,
+        "format": "{icon}",
+        "icon-size": 14,
+        "on-click-window": "sh ~/.config/waybar/focus-window.sh {address} {button}"
+    }
   },
   "keyboard-state": {
     "numlock": true,

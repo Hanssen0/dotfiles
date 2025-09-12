@@ -47,6 +47,11 @@ button:hover {
     border-bottom-color: rgba(235, 77, 75, 0.6);
 }
 
+#workspaces .taskbar-window {
+  margin-top: -2px;
+  opacity: 0.8;
+}
+
 #window {
     margin-top: 2px;
     font-weight: bold;

@@ -9,7 +9,7 @@ do
 done
 
 init=$(ddcutil -b 21 -t getvcp 10 | cut -d ' ' -f 4)
-curr=$((revMap[init] * 100 / 49))
+curr=$(((revMap[init] * 100 + 48) / 49))
 
 rm -rf $cmd_pipe
 mkfifo $cmd_pipe

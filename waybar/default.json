@@ -5,8 +5,17 @@
   // "width": 1280, // Waybar width
   "spacing": 0, // Gaps between modules (4px)
   // Choose the order of the modules
-  "modules-left": ["hyprland/workspaces", "custom/media", "hyprland/window"],
-  "modules-center": [],
+  "modules-center": [
+    "hyprland/workspaces",
+  ],
+  "modules-right": [
+    "network",
+    "cpu",
+    "temperature",
+    "clock",
+    "battery",
+    "tray",
+  ],
   "hyrpland/workspaces": {
     "on-click": "activate",
     "sort-by": "number",
@@ -87,7 +96,7 @@
     "min-brightness": 8
   },
   "custom/ddcci": {
-    "format": " {percentage}% {icon} ",
+    "format": " {percentage}% {icon}",
     "format-icons": ["", "", "", "", "", "", "", "", ""],
     "exec": "sh ~/.config/waybar/ddcci.sh",
     "return-type": "json",
@@ -127,7 +136,7 @@
     "format-bluetooth": "{volume}% {icon} {format_source}",
     "format-bluetooth-muted": " {icon} {format_source}",
     "format-muted": " {format_source}",
-    "format-source": "{volume}% ",
+    "format-source": " {volume}% ",
     "format-source-muted": "",
     "format-icons": {
       "headphone": " ",
@@ -140,29 +149,17 @@
     },
     "on-click": "flatpak run com.saivert.pwvucontrol"
   },
-  "custom/media": {
-    "format": "{icon} {}",
-    "return-type": "json",
-    "max-length": 40,
-    "format-icons": {
-      "spotify": "",
-      "default": "🎜"
-    },
-    "escape": true,
-    "exec": "$HOME/.config/waybar/mediaplayer.py 2> /dev/null" // Script in resources folder
-    // "exec": "$HOME/.config/waybar/mediaplayer.py --player spotify 2> /dev/null" // Filter player based on name
-  },
   "custom/notification": {
     "tooltip": false,
     "format": "{icon}",
     "format-icons": {
-      "notification": "<span foreground='red'><sup></sup></span> ",
+      "notification": "<span foreground='#f39493'><sup></sup></span> ",
       "none": " ",
-      "dnd-notification": "<span foreground='red'><sup></sup></span> ",
+      "dnd-notification": "<span foreground='#f39493'><sup></sup></span> ",
       "dnd-none": " ",
-      "inhibited-notification": "<span foreground='red'><sup></sup></span> ",
+      "inhibited-notification": "<span foreground='#f39493'><sup></sup></span> ",
       "inhibited-none": " ",
-      "dnd-inhibited-notification": "<span foreground='red'><sup></sup></span> ",
+      "dnd-inhibited-notification": "<span foreground='#f39493'><sup></sup></span> ",
       "dnd-inhibited-none": " "
     },
     "return-type": "json",

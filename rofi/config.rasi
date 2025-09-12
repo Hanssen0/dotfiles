@@ -1,0 +1,68 @@
+configuration {
+	modes: "combi,run";
+	font: "NotoSans Nerd Font 14";
+	show-icons: true;
+	hover-select: true;
+	parse-hosts: true;
+	parse-known-hosts: false;
+	combi-modes: "drun,ssh";
+	matching: "fuzzy";
+  display-drun: "";
+
+  timeout {
+      action: "kb-cancel";
+      delay:  0;
+  }
+  filebrowser {
+      directories-first: true;
+      sorting-method:    "name";
+  }
+}
+
+window {
+  y-offset: 20px;
+
+  background-color: rgba(255, 255, 255, 0.2);
+  background-image: linear-gradient(to right, rgba(91, 207, 251, 0.8), rgba(245, 171, 185, 0.8));
+
+  border: 4px;
+  border-color: rgba(245, 171, 185, 0.62);
+  border-radius: 0.8em;
+}
+
+listview {
+  lines: 10;
+  padding: 0.4em 0;
+}
+
+inputbar {
+  padding: 0.3em 0.5em;
+}
+
+element {
+  margin: 0.1em 0.4em;
+  padding: 0.4em 0.5em;
+
+  border-radius: 0.4em;
+}
+
+element normal.normal {
+  background-color: rgba(255, 255, 255, 0.4);
+}
+
+element alternate.normal {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+element selected.normal {
+  background-color: rgba(40, 40, 40, 0.6);
+}
+
+element-icon {
+  size: 1.3em;
+}
+
+element-text {
+  vertical-align: 0.5;
+}
+

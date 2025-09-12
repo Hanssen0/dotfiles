@@ -214,7 +214,8 @@
 
 .notification-group {
   /* Styling only for Grouped Notifications */
-  transition: opacity 200ms ease-in-out;
+  transition: opacity, background 200ms ease-in-out;
+  border-radius: 12px;
   /* The groups close button */
 }
 

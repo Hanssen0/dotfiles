@@ -1,0 +1,10 @@
+[Trigger]
+Operation = Install
+Operation = Upgrade
+Type = Package
+Target = papirus-icon-theme
+
+[Action]
+Description = Updating Papirus icon's primary color...
+When = PostTransaction
+Exec = /usr/bin/sh /etc/pacman.d/hooks/fix-papirus-color.sh

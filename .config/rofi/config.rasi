@@ -1,0 +1,106 @@
+configuration {
+	modes: "combi,run";
+	font: "NotoSans Nerd Font 14";
+	show-icons: true;
+	hover-select: true;
+	parse-hosts: true;
+	parse-known-hosts: false;
+	combi-modes: "drun,ssh";
+	matching: "fuzzy";
+  display-drun: "";
+
+  timeout {
+      action: "kb-cancel";
+      delay:  0;
+  }
+  filebrowser {
+      directories-first: true;
+      sorting-method:    "name";
+  }
+}
+
+window {
+  y-offset: 20px;
+
+  background-color: rgba(255, 255, 255, 0.1);
+  background-image: linear-gradient(to right, rgba(91, 207, 251, 0.6), rgba(245, 171, 185, 0.6));
+
+  padding: 0;
+
+  border: 2px;
+  border-color: rgba(245, 171, 185, 0.4);
+  border-radius: 0.8em;
+}
+
+listview {
+  lines: 10;
+  padding: 0;
+  margin: 0;
+
+  border: none;
+}
+
+scrollbar {
+  handle-color: rgba(40, 40, 40, 0.6);
+  handle-width: 4px;
+
+  background-color: rgba(200, 200, 200, 0.1);
+}
+
+inputbar {
+  padding: 0.8em 1em 0.8em 0;
+}
+
+entry {
+  placeholder-color: rgba(20, 20, 20, 0.4);
+}
+
+prompt {
+  color: rgba(255, 255, 255, 0.6);
+
+	font: "NotoSans Nerd Font 12";
+  text-transform: bold;
+  vertical-align: 1;
+
+  margin: 0 0.5em 0 0.8em;
+}
+
+textbox-prompt-colon {
+  str: "";
+  margin: 0;
+  padding: 0;
+}
+
+num-rows,
+num-filtered-rows,
+case-indicator,
+textbox-num-sep {
+  color: rgba(20, 20, 20, 0.4);
+}
+
+element {
+  margin: 0;
+  padding: 0.6em 1em;
+
+}
+
+element normal.normal {
+  background-color: rgba(200, 200, 200, 0.1);
+}
+
+element alternate.normal {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+element selected.normal {
+  background-color: rgba(40, 40, 40, 0.3);
+}
+
+element-icon {
+  size: 1.3em;
+}
+
+element-text {
+  vertical-align: 0.5;
+}
+

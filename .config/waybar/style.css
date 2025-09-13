@@ -5,12 +5,12 @@
 }
 
 window#waybar {
-    background: #eee;
-    border-bottom: rgba(245, 171, 185, 0.6) 3px solid;
+    background: transparent;
+    border-bottom: rgba(245, 171, 185, 0.4) 2px solid;
 }
 
 window#waybar > box {
-    background-image: linear-gradient(90deg, rgba(91, 206, 250, 0.7) 30%, rgba(255, 255, 255, 1) 46%, rgba(255, 255, 255, 1) 54%, rgba(245, 171, 185, 1) 70%);
+    background-image: linear-gradient(90deg, rgba(91, 206, 250, 0.5) 30%, rgba(255, 255, 255, 0.9) 46%, rgba(255, 255, 255, 0.9) 54%, rgba(245, 171, 185, 0.5) 70%);
     color: #f0f;
     padding: 0 1.5rem;
     min-height: 2.1rem;

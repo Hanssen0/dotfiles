@@ -1,6 +1,6 @@
 configuration {
-  layer: "top";
-  modes: "combi,ai";
+  wayland-layer: "top";
+  modes: "combi,ai,tsx";
   font: "NotoSans Nerd Font 14";
   show-icons: true;
   hover-select: true;
@@ -19,7 +19,15 @@ configuration {
   }
 
   combi {
-    display-name: "Combi";
+    display-name: "Global";
+  }
+
+  ai {
+    display-name: "Gemini";
+  }
+
+  tsx {
+    display-name: "Node";
   }
 }
 

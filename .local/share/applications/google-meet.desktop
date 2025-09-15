@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Google Meet
+StartupWMClass=Google-meet
+Comment=A secure video conferencing and communication service developed by Google that allows users to hold virtual meetings with high-quality video, audio, screen sharing, and chat.
+GenericName=Google Meet
+Exec=sh -c "~/.local/share/applications/google-meet"
+Icon=google-meet
+Type=Application
+Categories=Network;VideoConference;
+Path=/usr/local/bin

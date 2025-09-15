@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Google Calendar
+StartupWMClass=Google-calendar
+Comment=A free, web-based calendar service for organizing personal and professional schedules, allowing users to create events, set reminders, and share calendars with others.
+GenericName=Google Calendar
+Exec=sh -c "~/.local/share/applications/google-calendar"
+Icon=google-agenda
+Type=Application
+Categories=Office;Calendar;
+Path=/usr/local/bin

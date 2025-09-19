@@ -19,5 +19,5 @@ while true; do
   read < $cmd_pipe
 
   curr=$(($curr==0?1:0))
-  hyprctl --batch "keyword monitorv2[DP-3]:transform $curr ; keyword input:touchdevice:transform $curr" > /dev/null
+  hyprctl --batch "keyword monitorv2[DP-3]:transform $curr ; keyword device[wingcooltouch-wingcooltouch]:transform $curr" > /dev/null
 done

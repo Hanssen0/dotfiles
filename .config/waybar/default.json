@@ -185,5 +185,16 @@
     "exec": "sh ~/.config/waybar/rotate.sh",
     "return-type": "json",
     "on-click": "sh ~/.config/waybar/rotate.sh switch"
+  },
+  "custom/touchpad": {
+    "format": "{icon}",
+    "format-icons": {
+      "enabled": "󱠭 ",
+      "disabled": "󱠳 ",
+    },
+    "return-type": "json",
+    "exec": "sh ~/.config/waybar/touchpad.sh",
+    "return-type": "json",
+    "on-click": "sh ~/.config/waybar/touchpad.sh toggle"
   }
 }

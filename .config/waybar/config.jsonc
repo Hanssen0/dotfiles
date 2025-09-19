@@ -16,6 +16,7 @@
     "modules-left": [
         "custom/notification",
         "idle_inhibitor",
+        "custom/touchpad",
         "backlight",
         "pulseaudio",
         "hyprland/window",

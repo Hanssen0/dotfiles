@@ -4,6 +4,7 @@
     "modules-left": [
         "custom/notification",
         "idle_inhibitor",
+        "custom/rotate",
         "custom/ddcci",
         "pulseaudio",
         "hyprland/window",

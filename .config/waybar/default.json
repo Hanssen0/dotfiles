@@ -174,5 +174,16 @@
     "on-click": "swaync-client -t -sw",
     "on-click-right": "swaync-client -d -sw",
     "escape": true
+  },
+  "custom/rotate": {
+    "format": "{icon}",
+    "format-icons": {
+      "to-landscape": "󰢅 ",
+      "to-portrait": "󰢆 ",
+    },
+    "return-type": "json",
+    "exec": "sh ~/.config/waybar/rotate.sh",
+    "return-type": "json",
+    "on-click": "sh ~/.config/waybar/rotate.sh switch"
   }
 }

@@ -67,7 +67,9 @@
     "format-icons": {
       "activated": "",
       "deactivated": ""
-    }
+    },
+    "tooltip-format-activated": "Idle Inhibited",
+    "tooltip-format-deactivated": "Idle Running"
   },
   "tray": {
     // "icon-size": 21,

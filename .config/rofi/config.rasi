@@ -7,7 +7,8 @@ configuration {
   parse-hosts: true;
   parse-known-hosts: false;
   combi-modes: "drun,ssh";
-  matching: "fuzzy";
+  matching: "normal";
+  drun-match-fields: "name,generic,categories,keywords";
   display-drun: "";
 
   kb-mode-next: "Shift+Right,Control+Tab,Tab";

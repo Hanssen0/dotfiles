@@ -107,19 +107,19 @@
   "custom/ddcci-4": {
     "format": " {percentage}% {icon}",
     "format-icons": ["", "", "", "", "", "", "", "", ""],
-    "exec": "sh ~/.config/waybar/ddcci-4.sh",
+    "exec": "while true; do cat /tmp/ddcci-4-tx; done",
     "return-type": "json",
-    "on-scroll-up": "echo up > /tmp/waybar-ddcci-4-rx",
-    "on-scroll-down": "echo down > /tmp/waybar-ddcci-4-rx",
+    "on-scroll-up": "echo up > /tmp/ddcci-4-rx",
+    "on-scroll-down": "echo down > /tmp/ddcci-4-rx",
     "tooltip": false
   },
   "custom/ddcci-21": {
     "format": " {percentage}% {icon}",
     "format-icons": ["", "", "", "", "", "", "", "", ""],
-    "exec": "sh ~/.config/waybar/ddcci-21.sh",
+    "exec": "while true; do cat /tmp/ddcci-21-tx; done",
     "return-type": "json",
-    "on-scroll-up": "echo up > /tmp/waybar-ddcci-21-rx",
-    "on-scroll-down": "echo down > /tmp/waybar-ddcci-21-rx",
+    "on-scroll-up": "echo up > /tmp/ddcci-21-rx",
+    "on-scroll-down": "echo down > /tmp/ddcci-21-rx",
     "tooltip": false
   },
   "battery": {
